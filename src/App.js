@@ -1,24 +1,44 @@
-import logo from './logo.svg';
-import './App.css';
+import "./App.css";
+import { useContext, useEffect } from "react";
+import { ReactContext } from "./Context";
+import { getProducts } from "./apihelper";
+import Main from "./components/Main";
+import { BrowserRouter, Link, Route, Routes } from "react-router-dom";
+import Cart from "./components/Cart";
 
 function App() {
+  const [, dispatch] = useContext(ReactContext);
+
+  useEffect(() => {
+    getProducts().then((products) => {
+      dispatch({ type: "LOAD_PRODUCTS", payload: products.data });
+    });
+  }, [dispatch]);
+
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
+    <BrowserRouter>
+      <div className="App">
+        <header
+          style={{
+            backgroundColor: "cyan",
+            display: "flex",
+            justifyContent: "space-between",
+            padding: 20,
+          }}
         >
-          Learn React
-        </a>
-      </header>
-    </div>
+          <div>
+          <Link to='/'> Shopping Site</Link>         
+          </div>
+          <div>
+            <Link to='/cart'>Cart</Link>
+          </div>
+        </header>
+        <Routes>
+          <Route path="/" element={<Main />} />
+          <Route path="/cart" element={<Cart />} />
+        </Routes>
+      </div>
+    </BrowserRouter>
   );
 }
 
